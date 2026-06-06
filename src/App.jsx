@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
 import Login from './components/Login';
 import StockManager from './components/StockManager';
 import './App.css';
