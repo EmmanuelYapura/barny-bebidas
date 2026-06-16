@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import Login from './components/Login';
@@ -7,6 +7,7 @@ import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([
     { 
       id: '1', 
@@ -34,6 +35,22 @@ function App() {
     },
   ]);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if(firebaseUser){
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email
+        });
+      } else{
+        setUser(null);
+      }
+      setLoading(false);
+    })
+
+    return () => unsubscribe();
+  }, []);
+
   const addProduct = (newProduct) => {
     setProducts([...products, { ...newProduct, id: Date.now().toString() }]);
   };
@@ -46,14 +63,22 @@ function App() {
     setProducts(products.filter(p => p.id !== id));
   };
 
-  const handleLogout = () => {
-    setUser(null);
+  const handleLogout = async () => {
+    try{
+      await signOut(auth);
+    } catch(error){
+      console.error("Error al cerrar sesion", error);
+    }
   };
+
+  if (loading) {
+    return <div className="app-container"><p style={{color: '#64748b'}}>Cargando aplicación...</p></div>;
+  }
 
   return (
     <div className="app-container">
       {!user ? (
-        <Login onLogin={setUser} />
+        <Login />
       ) : (
         <StockManager 
           user={user} 
