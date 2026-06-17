@@ -27,8 +27,8 @@ function Login({ onLogin }) {
   return (
     <div className="login-card">
       <div className="brand-icon">📦</div>
-      <h2>BevStock Control</h2>
-      <p className="brand-subtitle">Gestión inteligente de inventario para profesionales del sector.</p>
+      <h2>Stock bebidas</h2>
+      <p className="brand-subtitle">Gestión de inventario para bebidas.</p>
       <form onSubmit={handleSubmit}>
         {errorMsg && <p style={{ color: '#ef4444', fontSize: '13px', marginBottom: '15px' }}>{errorMsg}</p>}
         
